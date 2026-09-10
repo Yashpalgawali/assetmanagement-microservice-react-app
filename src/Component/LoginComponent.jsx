@@ -21,7 +21,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 export default function LoginComponent() {
     const theme = useTheme();
     const navigate = useNavigate();
-    const { isAuthenticated, initiateLogin, initiateRegister } = useAuth();
+    const { isAuthenticated, initiateLogin, login, initiateRegister } = useAuth();
 
     useEffect(() => {
         AOS.init({ duration: 1000, once: true });
@@ -145,7 +145,8 @@ export default function LoginComponent() {
                             fullWidth
                             variant="contained"
                             size="large"
-                            onClick={initiateLogin}
+                            onClick={login}
+                            // onClick={initiateLogin}
                             data-aos="fade-up"
                             data-aos-delay="200"
                             startIcon={<LoginIcon />}
