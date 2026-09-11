@@ -1,19 +1,19 @@
-import { 
-    Avatar, 
-    Box, 
-    Button, 
-    IconButton, 
-    InputAdornment, 
-    Paper, 
-    Stack, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    TextField, 
-    Tooltip, 
+import {
+    Avatar,
+    Box,
+    Button,
+    IconButton,
+    InputAdornment,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip,
     Typography,
     useTheme,
     alpha
@@ -36,24 +36,25 @@ export default function ViewCompanyComponent() {
     useEffect(() => {
         getAllCompaniesList().then((response) => {
             setCompanyList(response.data);
+            console.log(response.data)
         }).catch((error) => {
             console.log('Error fetching companies', error);
         });
     }, []);
 
-    const filteredCompanies = companyList.filter(comp => 
-        comp.comp_name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredCompanies = companyList.filter(comp =>
+        comp.companyName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1200px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
-                    p: 3, 
-                    mb: 4, 
-                    borderRadius: 4, 
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 3,
+                    mb: 4,
+                    borderRadius: 4,
                     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                     color: 'white',
                     display: 'flex',
@@ -72,14 +73,14 @@ export default function ViewCompanyComponent() {
                         Maintain and manage company profiles across the organization
                     </Typography>
                 </Box>
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
+                <Button
+                    variant="contained"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate(`/company/-1`)}
-                    sx={{ 
-                        borderRadius: 3, 
-                        px: 3, 
+                    sx={{
+                        borderRadius: 3,
+                        px: 3,
                         py: 1.5,
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -127,9 +128,9 @@ export default function ViewCompanyComponent() {
                     <TableBody>
                         {filteredCompanies.length > 0 ? (
                             filteredCompanies.map((company, index) => (
-                                <TableRow 
-                                    key={company.comp_id}
-                                    sx={{ 
+                                <TableRow
+                                    key={company.companyId}
+                                    sx={{
                                         '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) },
                                         transition: 'background-color 0.2s'
                                     }}
@@ -137,8 +138,8 @@ export default function ViewCompanyComponent() {
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Avatar 
-                                                sx={{ 
+                                            <Avatar
+                                                sx={{
                                                     bgcolor: theme.palette.secondary.light,
                                                     width: 40,
                                                     height: 40
@@ -147,18 +148,18 @@ export default function ViewCompanyComponent() {
                                                 <BusinessIcon />
                                             </Avatar>
                                             <Typography variant="subtitle1" fontWeight="medium">
-                                                {company.comp_name}
+                                                {company.companyName}
                                             </Typography>
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="center">
                                         <Tooltip title="Update Company">
-                                            <IconButton 
-                                                color="primary" 
-                                                onClick={() => navigate(`/company/${company.comp_id}`)}
-                                                sx={{ 
-                                                    bgcolor: alpha(theme.palette.primary.main, 0.1), 
-                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) } 
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/company/${company.companyId}`)}
+                                                sx={{
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) }
                                                 }}
                                             >
                                                 <EditIcon fontSize="small" />

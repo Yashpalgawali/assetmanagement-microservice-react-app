@@ -24,11 +24,24 @@ import ChangePassword from "./Component/ChangePassword";
 import OAuthCallbackComponent from "./Component/OAuthCallbackComponent";
 
 function AuthenticatedRoute({ children }) {
-    const authContext = useAuth()
-    const navigate = useNavigate()
-    if (authContext.isAuthenticated)
-        return children
-    return <Navigate to="/login" />
+    // const authContext = useAuth()
+    // if (authContext.isAuthenticated)
+    //     return children
+    // return <Navigate to="/login" />
+    const {
+        initialized,
+        isAuthenticated
+    } = useAuth();
+
+    if (!initialized) {
+        return <div>Checking authentication...</div>;
+    }
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />;
+    }
+
+    return children;
 }
 
 export default function AssetManagement() {
