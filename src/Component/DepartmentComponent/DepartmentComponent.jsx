@@ -38,12 +38,13 @@ export default function DepartmentComponent() {
     const [title, setTitle] = useState("Add New Department");
 
     const [initialValues, setInitialValues] = useState({
-        dept_id: "",
-        dept_name: "",
+        departmentId: "",
+        departmentName: "",
         companyId: ""
     });
 
     useEffect(() => {
+
         getAllCompaniesList().then((response) => {
             setCompanies(response.data);
         });
@@ -51,10 +52,11 @@ export default function DepartmentComponent() {
         if (id && id != -1) {
             setTitle("Update Department");
             retrieveDepartmentById(id).then((response) => {
+                alert('found ' + id)
                 setInitialValues({
-                    dept_id: response.data.dept_id,
-                    dept_name: response.data.dept_name,
-                    companyId: response.data.company.comp_id
+                    departmentId: response.data.departmentId,
+                    departmentName: response.data.departmentName,
+                    companyId: response.data.companyId
                 });
             }).catch(error => {
                 toast.error("Error: Could not retrieve department details.");
@@ -71,42 +73,41 @@ export default function DepartmentComponent() {
     });
 
     async function handleSubmit(values, { resetForm }) {
+        alert('handleSubmit deptId ' + id)
         setIsDisabled(true);
-        try {
-            const companyResponse = await getCompanyById(values.companyId);
+        // try {
+        //     alert('deptID ' + id)
+        //     const companyResponse = await getCompanyById(values.companyId);
 
-            let dept_id = id;
-            if (id == -1) {
-                dept_id = '';
-            }
+        //     let departmentId = id;
+        //     if (id == -1) {
+        //         departmentId = '';
+        //     }
 
-            const deptData = {
-                dept_id: dept_id,
-                dept_name: values.dept_name,
-                company: {
-                    comp_id: companyResponse.data.comp_id,
-                    comp_name: companyResponse.data.comp_name
-                }
-            };
+        //     const deptData = {
+        //         departmentId: departmentId,
+        //         departmentName: values.departmentName,
+        //         companyId: companyResponse.data.companyId
+        //     }
 
-            const apiCall = id == -1
-                ? saveDepartment(deptData)
-                : updateDepartment(deptData);
-            alert(apiCall)
-            console.log(deptData)
-            apiCall.then((response) => {
-                toast.success(id === "-1" ? "Department successfully created!" : "Department details have been updated.");
-                setIsDisabled(false);
-                if (id == -1) resetForm();
-                navigate('/viewdepartments');
-            }).catch((error) => {
-                toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the department.");
-                setIsDisabled(false);
-            });
-        } catch (error) {
-            toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while fetching company details.");
-            setIsDisabled(false);
-        }
+        //     const apiCall = id == -1
+        //         ? saveDepartment(deptData)
+        //         : updateDepartment(deptData);
+
+        //     console.log(deptData)
+        //     apiCall.then((response) => {
+        //         toast.success(id === "-1" ? "Department successfully created!" : "Department details have been updated.");
+        //         setIsDisabled(false);
+        //         if (id == -1) resetForm();
+        //         navigate('/viewdepartments');
+        //     }).catch((error) => {
+        //         toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the department.");
+        //         setIsDisabled(false);
+        //     });
+        // } catch (error) {
+        //     toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while fetching company details.");
+        //     setIsDisabled(false);
+        // }
     }
 
     return (
@@ -148,7 +149,7 @@ export default function DepartmentComponent() {
                         initialValues={initialValues}
                         enableReinitialize={true}
                         validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
+                        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
                     >
                         {(props) => (
                             <Form>
@@ -173,8 +174,8 @@ export default function DepartmentComponent() {
                                                 sx={{ borderRadius: 2 }}
                                             >
                                                 {companies.map((company) => (
-                                                    <MenuItem key={company.comp_id} value={company.comp_id}>
-                                                        {company.comp_name}
+                                                    <MenuItem key={company.companyId} value={company.companyId}>
+                                                        {company.companyName}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
@@ -189,15 +190,15 @@ export default function DepartmentComponent() {
                                     <Grid item xs={12} md={6}>
                                         <TextField
                                             fullWidth
-                                            id="dept_name"
-                                            name="dept_name"
+                                            id="departmentName"
+                                            name="departmentName"
                                             label="Department Name"
                                             placeholder="e.g. Research & Development"
-                                            value={props.values.dept_name}
+                                            value={props.values.departmentName}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            error={props.touched.dept_name && Boolean(props.errors.dept_name)}
-                                            helperText={props.touched.dept_name && props.errors.dept_name}
+                                            error={props.touched.departmentName && Boolean(props.errors.departmentName)}
+                                            helperText={props.touched.departmentName && props.errors.departmentName}
                                             variant="outlined"
                                             InputProps={{ sx: { borderRadius: 2 } }}
                                         />

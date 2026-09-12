@@ -1,13 +1,13 @@
-import { 
-    Box, 
-    Button, 
-    Card, 
-    CardContent, 
-    CircularProgress, 
-    Divider, 
-    IconButton, 
-    Stack, 
-    TextField, 
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    IconButton,
+    Stack,
+    TextField,
     Typography,
     useTheme
 } from "@mui/material";
@@ -25,8 +25,8 @@ export default function AssetTypeComponent() {
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
-    
-    const [type_name, setTypeName] = useState('');
+
+    const [assetType, setTypeName] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
     const [title, setTitle] = useState("Add New Asset Category");
 
@@ -34,7 +34,7 @@ export default function AssetTypeComponent() {
         if (id && id !== "-1") {
             setTitle("Update Asset Category");
             getAssetType(id).then((response) => {
-                setTypeName(response.data.type_name);
+                setTypeName(response.data.assetType);
             }).catch((error) => {
                 toast.error('Error: Could not retrieve asset category details.');
             });
@@ -47,12 +47,12 @@ export default function AssetTypeComponent() {
     function handleSubmit(values, { resetForm }) {
         setIsDisabled(true);
         const assetTypeObject = {
-            type_id: id,
-            type_name: values.type_name
+            assetTypeId: id,
+            assetType: values.assetType
         };
 
-        const apiCall = id === "-1" 
-            ? saveAssetTypeApi(assetTypeObject) 
+        const apiCall = id === "-1"
+            ? saveAssetTypeApi(assetTypeObject)
             : updateAssetType(assetTypeObject);
 
         apiCall.then((response) => {
@@ -68,36 +68,36 @@ export default function AssetTypeComponent() {
 
     function validate(values) {
         let errors = {};
-        if (!values.type_name) {
-            errors.type_name = 'Please enter Asset Category name';
-        } else if (values.type_name.length < 2) {
-            errors.type_name = 'Name must be at least 2 characters';
+        if (!values.assetType) {
+            errors.assetType = 'Please enter Asset Category name';
+        } else if (values.assetType.length < 2) {
+            errors.assetType = 'Name must be at least 2 characters';
         }
         return errors;
     }
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, display: 'flex', justifyContent: 'center' }} className="fade-in">
-            <Card 
-                sx={{ 
-                    width: '100%', 
-                    maxWidth: 600, 
-                    borderRadius: 4, 
+            <Card
+                sx={{
+                    width: '100%',
+                    maxWidth: 600,
+                    borderRadius: 4,
                     boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                     overflow: 'visible'
                 }}
             >
-                <Box 
-                    sx={{ 
-                        p: 3, 
+                <Box
+                    sx={{
+                        p: 3,
                         background: `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`,
                         color: 'white',
                         borderRadius: '16px 16px 0 0',
                         position: 'relative'
                     }}
                 >
-                    <IconButton 
-                        onClick={() => navigate('/viewassettypes')} 
+                    <IconButton
+                        onClick={() => navigate('/viewassettypes')}
                         sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white' }}
                     >
                         <ArrowBackIcon />
@@ -112,7 +112,7 @@ export default function AssetTypeComponent() {
 
                 <CardContent sx={{ p: 4 }}>
                     <Formik
-                        initialValues={{ type_name }}
+                        initialValues={{ assetType }}
                         enableReinitialize={true}
                         onSubmit={handleSubmit}
                         validate={validate}
@@ -126,15 +126,15 @@ export default function AssetTypeComponent() {
                                         </Typography>
                                         <TextField
                                             fullWidth
-                                            id="type_name"
-                                            name="type_name"
+                                            id="assetType"
+                                            name="assetType"
                                             label="Asset Type / Category"
                                             placeholder="e.g. Laptop, Mobile, Furniture"
-                                            value={props.values.type_name}
+                                            value={props.values.assetType}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            error={props.touched.type_name && Boolean(props.errors.type_name)}
-                                            helperText={props.touched.type_name && props.errors.type_name}
+                                            error={props.touched.assetType && Boolean(props.errors.assetType)}
+                                            helperText={props.touched.assetType && props.errors.assetType}
                                             variant="outlined"
                                             InputProps={{
                                                 sx: { borderRadius: 2 }
@@ -158,9 +158,9 @@ export default function AssetTypeComponent() {
                                             color="success"
                                             disabled={isDisabled || !props.dirty}
                                             startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
-                                            sx={{ 
-                                                borderRadius: 2, 
-                                                px: 4, 
+                                            sx={{
+                                                borderRadius: 2,
+                                                px: 4,
                                                 textTransform: 'none',
                                                 fontWeight: 'bold',
                                                 boxShadow: 4

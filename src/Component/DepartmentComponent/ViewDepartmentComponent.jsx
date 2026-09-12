@@ -1,19 +1,19 @@
-import { 
-    Avatar, 
-    Box, 
-    Button, 
-    IconButton, 
-    InputAdornment, 
-    Paper, 
-    Stack, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    TextField, 
-    Tooltip, 
+import {
+    Avatar,
+    Box,
+    Button,
+    IconButton,
+    InputAdornment,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip,
     Typography,
     useTheme,
     alpha
@@ -37,26 +37,27 @@ export default function ViewDepartmentComponent() {
 
     useEffect(() => {
         getAllDepartments().then((response) => {
+            console.log(response.data);
             setDeptList(response.data);
         }).catch((error) => {
             toast.error(error.response?.data?.errorMessage || "Error: Could not retrieve department list. Please try again later.");
         });
     }, []);
 
-    const filteredDepartments = deptList.filter(dept => 
-        dept.dept_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (dept.company && dept.company.comp_name.toLowerCase().includes(searchTerm.toLowerCase()))
+    const filteredDepartments = deptList.filter(dept =>
+        dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1200px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
-                    p: 3, 
-                    mb: 4, 
-                    borderRadius: 4, 
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 3,
+                    mb: 4,
+                    borderRadius: 4,
                     background: `linear-gradient(45deg, ${theme.palette.secondary.main}, ${theme.palette.secondary.dark})`,
                     color: 'white',
                     display: 'flex',
@@ -75,14 +76,14 @@ export default function ViewDepartmentComponent() {
                         Organize your workforce into functional units and departments
                     </Typography>
                 </Box>
-                <Button 
-                    variant="contained" 
-                    color="primary" 
+                <Button
+                    variant="contained"
+                    color="primary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate('/department/-1')}
-                    sx={{ 
-                        borderRadius: 3, 
-                        px: 3, 
+                    sx={{
+                        borderRadius: 3,
+                        px: 3,
                         py: 1.5,
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -131,9 +132,9 @@ export default function ViewDepartmentComponent() {
                     <TableBody>
                         {filteredDepartments.length > 0 ? (
                             filteredDepartments.map((dept, index) => (
-                                <TableRow 
-                                    key={dept.dept_id}
-                                    sx={{ 
+                                <TableRow
+                                    key={dept.departmentId}
+                                    sx={{
                                         '&:hover': { bgcolor: alpha(theme.palette.secondary.main, 0.02) },
                                         transition: 'background-color 0.2s'
                                     }}
@@ -141,8 +142,8 @@ export default function ViewDepartmentComponent() {
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Avatar 
-                                                sx={{ 
+                                            <Avatar
+                                                sx={{
                                                     bgcolor: theme.palette.primary.light,
                                                     width: 40,
                                                     height: 40
@@ -151,7 +152,7 @@ export default function ViewDepartmentComponent() {
                                                 <AccountTreeIcon />
                                             </Avatar>
                                             <Typography variant="subtitle1" fontWeight="medium">
-                                                {dept.dept_name}
+                                                {dept.departmentName}
                                             </Typography>
                                         </Stack>
                                     </TableCell>
@@ -159,18 +160,18 @@ export default function ViewDepartmentComponent() {
                                         <Stack direction="row" spacing={1} alignItems="center">
                                             <BusinessIcon fontSize="small" color="action" />
                                             <Typography variant="body2" color="text.secondary">
-                                                {dept.company?.comp_name || 'N/A'}
+                                                {dept.companyName || 'N/A'}
                                             </Typography>
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="center">
                                         <Tooltip title="Edit Department">
-                                            <IconButton 
-                                                color="primary" 
-                                                onClick={() => navigate(`/department/${dept.dept_id}`)}
-                                                sx={{ 
-                                                    bgcolor: alpha(theme.palette.primary.main, 0.1), 
-                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) } 
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/department/${dept.departmentId}`)}
+                                                sx={{
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) }
                                                 }}
                                             >
                                                 <EditIcon fontSize="small" />
@@ -195,4 +196,4 @@ export default function ViewDepartmentComponent() {
             </TableContainer>
         </Box>
     );
-}
+}
