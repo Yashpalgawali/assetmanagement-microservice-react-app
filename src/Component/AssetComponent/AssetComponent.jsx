@@ -1,17 +1,17 @@
-import { 
-    Box, 
-    Button, 
-    Card, 
-    CardContent, 
-    CircularProgress, 
-    Divider, 
-    FormControl, 
-    IconButton, 
-    InputLabel, 
-    MenuItem, 
-    Select, 
-    Stack, 
-    TextField, 
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Divider,
+    FormControl,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
     Typography,
     useTheme,
     alpha,
@@ -32,16 +32,16 @@ export default function AssetComponent() {
     const theme = useTheme();
     const { id } = useParams();
     const navigate = useNavigate();
-    
+
     const [initialValues, setInitialValues] = useState({
-        asset_name: "",
-        asset_id: "",
-        model_number: "",
-        asset_number: "",
-        quantity: "",
+        assetName: "",
+        assetId: "",
+        modelNumber: "",
+        assetNumber: "",
+        qty: "",
         atype: ""
     });
-    
+
     const [atypelist, setAssetTypeList] = useState([]);
     const [isDisabled, setIsDisabled] = useState(false);
     const [title, setTitle] = useState("Register New Asset");
@@ -50,17 +50,19 @@ export default function AssetComponent() {
         getAllAssetTypes().then((response) => {
             setAssetTypeList(response.data);
         });
-        
+
         if (id && id !== "-1") {
+
             setTitle("Update Asset Specifications");
             retrieveAssetById(id).then((response) => {
+                console.log(response.data)
                 setInitialValues({
-                    asset_name: response.data.asset_name,
-                    asset_id: response.data.asset_id,
-                    model_number: response.data.model_number,
-                    asset_number: response.data.asset_number,
-                    quantity: response.data.quantity,
-                    atype: response.data.atype.type_id
+                    assetName: response.data.assetName,
+                    assetId: response.data.assetId,
+                    modelNumber: response.data.modelNumber,
+                    assetNumber: response.data.assetNumber,
+                    qty: response.data.qty,
+                    atype: response.data.assetType.assetTypeId
                 });
             }).catch(error => {
                 toast.error("Error: Could not retrieve asset details from the server.");
@@ -68,24 +70,27 @@ export default function AssetComponent() {
         } else {
             setTitle("Register New Asset");
             setInitialValues({
-                asset_name: "",
-                asset_id: "",
-                model_number: "",
-                asset_number: "",
-                quantity: "",
+                assetName: "",
+                assetId: "",
+                modelNumber: "",
+                assetNumber: "",
+                qty: "",
                 atype: ""
             });
         }
     }, [id]);
 
     function handleSubmit(values, { resetForm }) {
+
         setIsDisabled(true);
-        const assetData = { 
+        const assetData = {
             ...values,
-            atype: { type_id: values.atype } // API expects object for type
+            assetType: { assetTypeId: values.atype } // API expects object for type
         };
-             
+
         const apiCall = id === "-1" ? saveAsset(assetData) : updateAsset(assetData);
+
+        // console.log(assetData)
 
         apiCall.then((response) => {
             toast.success(id === "-1" ? "Asset successfully added to inventory!" : "Asset details have been successfully updated.");
@@ -100,34 +105,34 @@ export default function AssetComponent() {
 
     function validate(values) {
         let errors = {};
-        if (!values.asset_name) errors.asset_name = "Name is required";
+        if (!values.assetName) errors.assetName = "Name is required";
         if (!values.atype) errors.atype = "Type is required";
-        if (!values.quantity) errors.quantity = "Quantity is required";
+        if (!values.qty) errors.qty = "Quantity is required";
         return errors;
     }
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, display: 'flex', justifyContent: 'center' }} className="fade-in">
-            <Card 
-                sx={{ 
-                    width: '100%', 
-                    maxWidth: 800, 
-                    borderRadius: 4, 
+            <Card
+                sx={{
+                    width: '100%',
+                    maxWidth: 800,
+                    borderRadius: 4,
                     boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                     overflow: 'visible'
                 }}
             >
-                <Box 
-                    sx={{ 
-                        p: 3, 
+                <Box
+                    sx={{
+                        p: 3,
                         background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                         color: 'white',
                         borderRadius: '16px 16px 0 0',
                         position: 'relative'
                     }}
                 >
-                    <IconButton 
-                        onClick={() => navigate('/viewassets')} 
+                    <IconButton
+                        onClick={() => navigate('/viewassets')}
                         sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', color: 'white' }}
                     >
                         <ArrowBackIcon />
@@ -155,7 +160,7 @@ export default function AssetComponent() {
                                             General Information
                                         </Typography>
                                     </Grid>
-                                    
+
                                     <Grid item xs={12} md={6}>
                                         <FormControl fullWidth variant="outlined" error={props.touched.atype && Boolean(props.errors.atype)}>
                                             <InputLabel id="asset-type-label">Asset Type</InputLabel>
@@ -170,8 +175,8 @@ export default function AssetComponent() {
                                                 sx={{ borderRadius: 2 }}
                                             >
                                                 {atypelist.map((type) => (
-                                                    <MenuItem key={type.type_id} value={type.type_id}>
-                                                        {type.type_name}
+                                                    <MenuItem key={type.assetTypeId} value={type.assetTypeId}>
+                                                        {type.assetType}
                                                     </MenuItem>
                                                 ))}
                                             </Select>
@@ -186,15 +191,15 @@ export default function AssetComponent() {
                                     <Grid item xs={12} md={6}>
                                         <TextField
                                             fullWidth
-                                            id="asset_name"
-                                            name="asset_name"
+                                            id="assetName"
+                                            name="assetName"
                                             label="Asset Name"
                                             placeholder="e.g. Dell Latitude 5420"
-                                            value={props.values.asset_name}
+                                            value={props.values.assetName}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            error={props.touched.asset_name && Boolean(props.errors.asset_name)}
-                                            helperText={props.touched.asset_name && props.errors.asset_name}
+                                            error={props.touched.assetName && Boolean(props.errors.assetName)}
+                                            helperText={props.touched.assetName && props.errors.assetName}
                                             variant="outlined"
                                             InputProps={{ sx: { borderRadius: 2 } }}
                                         />
@@ -210,11 +215,11 @@ export default function AssetComponent() {
                                     <Grid item xs={12} md={4}>
                                         <TextField
                                             fullWidth
-                                            id="model_number"
-                                            name="model_number"
+                                            id="modelNumber"
+                                            name="modelNumber"
                                             label="Model Number"
                                             placeholder="MI-12345"
-                                            value={props.values.model_number}
+                                            value={props.values.modelNumber}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                             variant="outlined"
@@ -225,11 +230,11 @@ export default function AssetComponent() {
                                     <Grid item xs={12} md={4}>
                                         <TextField
                                             fullWidth
-                                            id="asset_number"
-                                            name="asset_number"
+                                            id="assetNumber"
+                                            name="assetNumber"
                                             label="Serial/Asset Number"
                                             placeholder="SN-987654"
-                                            value={props.values.asset_number}
+                                            value={props.values.assetNumber}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
                                             variant="outlined"
@@ -240,15 +245,15 @@ export default function AssetComponent() {
                                     <Grid item xs={12} md={4}>
                                         <TextField
                                             fullWidth
-                                            id="quantity"
-                                            name="quantity"
+                                            id="qty"
+                                            name="qty"
                                             label="Quantity"
                                             type="number"
-                                            value={props.values.quantity}
+                                            value={props.values.qty}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            error={props.touched.quantity && Boolean(props.errors.quantity)}
-                                            helperText={props.touched.quantity && props.errors.quantity}
+                                            error={props.touched.qty && Boolean(props.errors.qty)}
+                                            helperText={props.touched.qty && props.errors.qty}
                                             variant="outlined"
                                             InputProps={{ sx: { borderRadius: 2 } }}
                                         />
@@ -272,9 +277,9 @@ export default function AssetComponent() {
                                                 variant="contained"
                                                 disabled={isDisabled || !props.dirty}
                                                 startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
-                                                sx={{ 
-                                                    borderRadius: 2, 
-                                                    px: 4, 
+                                                sx={{
+                                                    borderRadius: 2,
+                                                    px: 4,
                                                     textTransform: 'none',
                                                     fontWeight: 'bold',
                                                     boxShadow: 4

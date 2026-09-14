@@ -44,11 +44,14 @@ export default function ViewDepartmentComponent() {
         });
     }, []);
 
-    const filteredDepartments = deptList.filter(dept =>
-        dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    // const filteredDepartments = deptList.filter(dept =>
+    //     dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
+    // ); 
 
+    const filteredDepartments = deptList.filter(dept =>
+        dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase() || (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase())))
+    );
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1200px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}

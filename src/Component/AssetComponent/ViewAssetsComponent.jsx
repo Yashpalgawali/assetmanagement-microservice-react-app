@@ -1,20 +1,20 @@
-import { 
-    Avatar, 
-    Box, 
-    Button, 
+import {
+    Avatar,
+    Box,
+    Button,
     Chip,
-    IconButton, 
-    InputAdornment, 
-    Paper, 
-    Stack, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    TextField, 
-    Tooltip, 
+    IconButton,
+    InputAdornment,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip,
     Typography,
     useTheme,
     alpha
@@ -37,27 +37,28 @@ export default function ViewAssetsComponent() {
 
     useEffect(() => {
         getAllAssets().then((response) => {
+            console.log(response.data)
             setAssetList(response.data);
         }).catch((error) => {
             console.log('Error fetching assets', error);
         });
     }, []);
 
-    const filteredAssets = assetList.filter(asset => 
-        asset.asset_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.model_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (asset.atype && asset.atype.type_name.toLowerCase().includes(searchTerm.toLowerCase()))
+    const filteredAssets = assetList.filter(asset =>
+        asset.assetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.modelNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (asset.atype && asset.atype.assetType.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1400px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
-                    p: 4, 
-                    mb: 4, 
-                    borderRadius: 4, 
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 4,
+                    mb: 4,
+                    borderRadius: 4,
                     background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                     color: 'white',
                     display: 'flex',
@@ -79,14 +80,14 @@ export default function ViewAssetsComponent() {
                         Track and manage all hardware and software assets across the organization
                     </Typography>
                 </Box>
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
+                <Button
+                    variant="contained"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate(`/asset/-1`)}
-                    sx={{ 
-                        borderRadius: 3, 
-                        px: 4, 
+                    sx={{
+                        borderRadius: 3,
+                        px: 4,
                         py: 1.5,
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -118,8 +119,8 @@ export default function ViewAssetsComponent() {
                                 <SearchIcon color="action" />
                             </InputAdornment>
                         ),
-                        sx: { 
-                            borderRadius: 3, 
+                        sx: {
+                            borderRadius: 3,
                             bgcolor: 'background.paper',
                             boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
                         }
@@ -143,9 +144,9 @@ export default function ViewAssetsComponent() {
                     <TableBody>
                         {filteredAssets.length > 0 ? (
                             filteredAssets.map((asset, index) => (
-                                <TableRow 
-                                    key={asset.asset_id}
-                                    sx={{ 
+                                <TableRow
+                                    key={asset.assetId}
+                                    sx={{
                                         '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) },
                                         transition: 'background-color 0.2s'
                                     }}
@@ -153,8 +154,8 @@ export default function ViewAssetsComponent() {
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Avatar 
-                                                sx={{ 
+                                            <Avatar
+                                                sx={{
                                                     bgcolor: theme.palette.background.default,
                                                     color: theme.palette.primary.main,
                                                     width: 44,
@@ -166,43 +167,43 @@ export default function ViewAssetsComponent() {
                                             </Avatar>
                                             <Box>
                                                 <Typography variant="subtitle1" fontWeight="bold">
-                                                    {asset.asset_name}
+                                                    {asset.assetName}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary">
-                                                    ID: {asset.asset_id}
+                                                    ID: {asset.assetId}
                                                 </Typography>
                                             </Box>
                                         </Stack>
                                     </TableCell>
                                     <TableCell>
-                                        <Chip 
-                                            label={asset.atype?.type_name || 'Unassigned'} 
-                                            size="small" 
-                                            sx={{ 
+                                        <Chip
+                                            label={asset.assetType?.assetType || 'Unassigned'}
+                                            size="small"
+                                            sx={{
                                                 bgcolor: alpha(theme.palette.primary.main, 0.1),
                                                 color: theme.palette.primary.main,
                                                 fontWeight: 'medium',
                                                 borderRadius: 2
-                                            }} 
+                                            }}
                                         />
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body2" sx={{ fontFamily: 'monospace', bgcolor: alpha(theme.palette.grey[500], 0.1), px: 1, py: 0.5, borderRadius: 1, display: 'inline-block' }}>
-                                            {asset.model_number}
+                                            {asset.modelNumber}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" fontWeight="bold" color={asset.quantity < 5 ? 'error' : 'success.main'}>
-                                            {asset.quantity} units
+                                        <Typography variant="body2" fontWeight="bold" color={asset.qty < 5 ? 'error' : 'success.main'}>
+                                            {asset.qty} units
                                         </Typography>
                                     </TableCell>
                                     <TableCell align="center">
                                         <Tooltip title="Edit Asset">
-                                            <IconButton 
-                                                color="primary" 
-                                                onClick={() => navigate(`/asset/${asset.asset_id}`)}
-                                                sx={{ 
-                                                    bgcolor: alpha(theme.palette.primary.main, 0.1), 
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/asset/${asset.assetId}`)}
+                                                sx={{
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
                                                     '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2), transform: 'scale(1.1)' },
                                                     transition: 'all 0.2s'
                                                 }}
