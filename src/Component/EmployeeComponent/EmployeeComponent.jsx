@@ -64,7 +64,10 @@ export default function EmployeeComponent() {
         // Load initial lists
         getAllCompaniesList().then(res => setCompList(res.data));
         getAllDesignations().then(res => setDesigList(res.data));
-        getAllAssets().then(res => setAssetList(res.data));
+        getAllAssets().then(res => {
+            console.log("All assets data ", res.data);
+            setAssetList(res.data)
+        });
 
         if (empId !== -1) {
             setTitle("Update Employee Profile");
@@ -72,7 +75,7 @@ export default function EmployeeComponent() {
                 const empData = response.data;
 
                 // Fetch departments for the employee's company
-                retrieveDepartmentsByCompanyId(empData.department.company.comp_id).then(res => setDeptList(res.data));
+                retrieveDepartmentsByCompanyId(empData.department.company.companyId).then(res => setDeptList(res.data));
 
                 // Fetch assigned assets
                 getAllAssignedAssetsByEmpId(empId).then((res) => {
@@ -140,7 +143,7 @@ export default function EmployeeComponent() {
             emp_id: empId !== -1 ? empId : -1
         };
 
-        console.log("object is ",submissionValues)
+        console.log("object is ", submissionValues)
 
         const apiCall = empId === -1 ? saveEmployee(submissionValues) : updateEmployee(submissionValues);
 
@@ -177,8 +180,8 @@ export default function EmployeeComponent() {
     }
 
     const assetOptions = assetList.map((asset) => ({
-        value: asset.asset_id,
-        label: asset.asset_name
+        value: asset.assetId,
+        label: asset.assetName
     }));
 
     return (
@@ -313,7 +316,7 @@ export default function EmployeeComponent() {
                                                         sx={{ borderRadius: 2 }}
                                                     >
                                                         {desigList.map(desig => (
-                                                            <MenuItem key={desig.desig_id} value={desig.desig_id}>{desig.desig_name}</MenuItem>
+                                                            <MenuItem key={desig.designationId} value={desig.designationId}>{desig.designationName}</MenuItem>
                                                         ))}
                                                     </MuiSelect>
                                                 </FormControl>
@@ -336,7 +339,7 @@ export default function EmployeeComponent() {
                                                         sx={{ borderRadius: 2 }}
                                                     >
                                                         {compList.map(comp => (
-                                                            <MenuItem key={comp.comp_id} value={comp.comp_id}>{comp.comp_name}</MenuItem>
+                                                            <MenuItem key={comp.companyId} value={comp.companyId}>{comp.companyName}</MenuItem>
                                                         ))}
                                                     </MuiSelect>
                                                 </FormControl>
@@ -356,7 +359,7 @@ export default function EmployeeComponent() {
                                                         sx={{ borderRadius: 2 }}
                                                     >
                                                         {deptList.map(dept => (
-                                                            <MenuItem key={dept.dept_id} value={dept.dept_id}>{dept.dept_name}</MenuItem>
+                                                            <MenuItem key={dept.departmentId} value={dept.departmentId}>{dept.departmentName}</MenuItem>
                                                         ))}
                                                     </MuiSelect>
                                                 </FormControl>

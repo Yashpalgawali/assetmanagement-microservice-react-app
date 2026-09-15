@@ -24,6 +24,7 @@ import SaveIcon from '@mui/icons-material/Save';
 export default function DesignationComponent() {
     const theme = useTheme();
     const { id } = useParams();
+    const desigId = Number(id);
     const navigate = useNavigate();
 
     const [designationName, setDesignation] = useState('');
@@ -31,9 +32,9 @@ export default function DesignationComponent() {
     const [title, setTitle] = useState("Add New Designation");
 
     useEffect(() => {
-        if (id && id !== "-1") {
+        if (desigId && desigId !== -1) {
             setTitle("Update Designation");
-            retrieveDesignationById(id).then((response) => {
+            retrieveDesignationById(desigId).then((response) => {
                 setDesignation(response.data.designationName);
             }).catch(error => {
                 toast.error("Error: Could not retrieve designation details.");
@@ -42,23 +43,23 @@ export default function DesignationComponent() {
             setTitle("Add New Designation");
             setDesignation("");
         }
-    }, [id]);
+    }, [desigId]);
 
     function handleSubmit(values, { resetForm }) {
         setIsDisabled(true);
         const designationObject = {
-            designationId: id,
+            designationId: desigId,
             designationName: values.designationName
         };
 
-        const apiCall = id === "-1"
+        const apiCall = desigId === -1
             ? saveDesignation(designationObject)
             : updateDesignation(designationObject);
 
         apiCall.then((response) => {
-            toast.success(id === "-1" ? "Designation successfully added to the system!" : "Designation details have been successfully updated.");
+            toast.success(desigId === -1 ? "Designation successfully added to the system!" : "Designation details have been successfully updated.");
             setIsDisabled(false);
-            if (id === "-1") resetForm();
+            if (desigId === -1) resetForm();
             navigate('/viewdesignations');
         }).catch((error) => {
             toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the designation.");

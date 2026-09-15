@@ -7,4 +7,4 @@ export const retrieveDepartmentById = (dept_id) => apiClient.get(`/department/ap
 export const saveDepartment = (departmentData) => apiClient.post('/department/api/', departmentData);
 export const updateDepartment = (departmentData) => apiClient.put('/department/api/', departmentData);
 
-export const retrieveDepartmentsByCompanyId = (comp_id) => apiClient.get(`/department/api/getdeptbycompid/${comp_id}`);
+export const retrieveDepartmentsByCompanyId = (comp_id) => apiClient.get(`/department/api/company/${comp_id}`);
