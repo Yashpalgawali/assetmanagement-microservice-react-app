@@ -26,6 +26,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import BusinessIcon from '@mui/icons-material/Business';
+import { toast } from "react-toastify";
 
 export default function ViewCompanyComponent() {
     const theme = useTheme();
@@ -36,9 +37,9 @@ export default function ViewCompanyComponent() {
     useEffect(() => {
         getAllCompaniesList().then((response) => {
             setCompanyList(response.data);
-            console.log(response.data)
+
         }).catch((error) => {
-            console.log('Error fetching companies', error);
+            toast.error('Error fetching companies', error);
         });
     }, []);
 

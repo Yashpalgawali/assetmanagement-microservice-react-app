@@ -26,7 +26,7 @@ export default function DesignationComponent() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const [desig_name, setDesignation] = useState('');
+    const [designationName, setDesignation] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
     const [title, setTitle] = useState("Add New Designation");
 
@@ -34,7 +34,7 @@ export default function DesignationComponent() {
         if (id && id !== "-1") {
             setTitle("Update Designation");
             retrieveDesignationById(id).then((response) => {
-                setDesignation(response.data.desig_name);
+                setDesignation(response.data.designationName);
             }).catch(error => {
                 toast.error("Error: Could not retrieve designation details.");
             });
@@ -47,8 +47,8 @@ export default function DesignationComponent() {
     function handleSubmit(values, { resetForm }) {
         setIsDisabled(true);
         const designationObject = {
-            desig_id: id,
-            desig_name: values.desig_name
+            designationId: id,
+            designationName: values.designationName
         };
 
         const apiCall = id === "-1"
@@ -68,10 +68,10 @@ export default function DesignationComponent() {
 
     function validate(values) {
         let errors = {};
-        if (!values.desig_name) {
-            errors.desig_name = "Designation name is required";
-        } else if (values.desig_name.length < 2) {
-            errors.desig_name = "Designation name must be at least 2 characters";
+        if (!values.designationName) {
+            errors.designationName = "Designation name is required";
+        } else if (values.designationName.length < 2) {
+            errors.designationName = "Designation name must be at least 2 characters";
         }
         return errors;
     }
@@ -112,7 +112,7 @@ export default function DesignationComponent() {
 
                 <CardContent sx={{ p: 4 }}>
                     <Formik
-                        initialValues={{ desig_name }}
+                        initialValues={{ designationName }}
                         enableReinitialize={true}
                         onSubmit={handleSubmit}
                         validate={validate}
@@ -126,15 +126,15 @@ export default function DesignationComponent() {
                                         </Typography>
                                         <TextField
                                             fullWidth
-                                            id="desig_name"
-                                            name="desig_name"
+                                            id="designationName"
+                                            name="designationName"
                                             label="Designation Name"
                                             placeholder="e.g. Senior Software Engineer"
-                                            value={props.values.desig_name}
+                                            value={props.values.designationName}
                                             onChange={props.handleChange}
                                             onBlur={props.handleBlur}
-                                            error={props.touched.desig_name && Boolean(props.errors.desig_name)}
-                                            helperText={props.touched.desig_name && props.errors.desig_name}
+                                            error={props.touched.designationName && Boolean(props.errors.designationName)}
+                                            helperText={props.touched.designationName && props.errors.designationName}
                                             variant="outlined"
                                             InputProps={{
                                                 sx: { borderRadius: 2 }

@@ -28,6 +28,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import DevicesIcon from '@mui/icons-material/Devices';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import { toast } from "react-toastify";
 
 export default function ViewAssetsComponent() {
     const theme = useTheme();
@@ -37,10 +38,9 @@ export default function ViewAssetsComponent() {
 
     useEffect(() => {
         getAllAssets().then((response) => {
-            console.log(response.data)
             setAssetList(response.data);
         }).catch((error) => {
-            console.log('Error fetching assets', error);
+            toast.error("Error: Could not retrieve asset details from the server.");
         });
     }, []);
 

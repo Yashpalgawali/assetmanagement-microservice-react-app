@@ -35,8 +35,6 @@ export default function CompanyComponent() {
         if (id && id !== "-1") {
             setTitle("Update Company");
             getCompanyById(id).then(response => {
-                alert('get company by ID is called')
-                console.log(response.data)
                 setCompName(response.data.companyName);
             }).catch(error => {
                 toast.error("Failed to load company details");

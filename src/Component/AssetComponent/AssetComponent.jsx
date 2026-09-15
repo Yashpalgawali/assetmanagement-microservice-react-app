@@ -55,14 +55,13 @@ export default function AssetComponent() {
 
             setTitle("Update Asset Specifications");
             retrieveAssetById(id).then((response) => {
-                console.log(response.data)
                 setInitialValues({
                     assetName: response.data.assetName,
                     assetId: response.data.assetId,
                     modelNumber: response.data.modelNumber,
                     assetNumber: response.data.assetNumber,
                     qty: response.data.qty,
-                    atype: response.data.assetType.assetTypeId
+                    atype: response.data.assetType?.assetTypeId ?? ""
                 });
             }).catch(error => {
                 toast.error("Error: Could not retrieve asset details from the server.");
@@ -83,14 +82,13 @@ export default function AssetComponent() {
     function handleSubmit(values, { resetForm }) {
 
         setIsDisabled(true);
+        const { atype, ...rest } = values;
         const assetData = {
-            ...values,
-            assetType: { assetTypeId: values.atype } // API expects object for type
+            ...rest,
+            assetType: { assetTypeId: atype } // API expects object for type
         };
 
         const apiCall = id === "-1" ? saveAsset(assetData) : updateAsset(assetData);
-
-        // console.log(assetData)
 
         apiCall.then((response) => {
             toast.success(id === "-1" ? "Asset successfully added to inventory!" : "Asset details have been successfully updated.");
@@ -275,7 +273,7 @@ export default function AssetComponent() {
                                             <Button
                                                 type="submit"
                                                 variant="contained"
-                                                disabled={isDisabled || !props.dirty}
+                                                disabled={isDisabled || (id === '-1' && !props.dirty)}
                                                 startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                                                 sx={{
                                                     borderRadius: 2,

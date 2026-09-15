@@ -37,21 +37,20 @@ export default function ViewDepartmentComponent() {
 
     useEffect(() => {
         getAllDepartments().then((response) => {
-            console.log(response.data);
             setDeptList(response.data);
         }).catch((error) => {
             toast.error(error.response?.data?.errorMessage || "Error: Could not retrieve department list. Please try again later.");
         });
     }, []);
 
-    // const filteredDepartments = deptList.filter(dept =>
-    //     dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    //     (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase()))
-    // ); 
-
     const filteredDepartments = deptList.filter(dept =>
-        dept.departmentName.toLowerCase().includes(searchTerm.toLowerCase() || (dept.company && dept.company.companyName.toLowerCase().includes(searchTerm.toLowerCase())))
+        String(dept.departmentName ?? "").toLowerCase().includes(String(searchTerm ?? "").toLowerCase()) ||
+        (dept.company && String(dept.company.companyName ?? "").toLowerCase().includes(String(searchTerm ?? "").toLowerCase()))
     );
+
+    // const filteredDepartments = deptList.filter(dept =>
+    //     String(dept.departmentName ?? "").toLowerCase().includes(searchTerm.toLowerCase())
+    // );
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1200px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}

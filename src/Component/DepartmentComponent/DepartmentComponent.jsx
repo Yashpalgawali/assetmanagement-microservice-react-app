@@ -52,7 +52,6 @@ export default function DepartmentComponent() {
         if (id && id != -1) {
             setTitle("Update Department");
             retrieveDepartmentById(id).then((response) => {
-                alert('found ' + id)
                 setInitialValues({
                     departmentId: response.data.departmentId,
                     departmentName: response.data.departmentName,
@@ -65,7 +64,7 @@ export default function DepartmentComponent() {
     }, [id]);
 
     const validationSchema = Yup.object({
-        dept_name: Yup.string()
+        departmentName: Yup.string()
             .required('Department name is required')
             .min(2, 'Name must be at least 2 characters'),
         companyId: Yup.string()
@@ -73,41 +72,38 @@ export default function DepartmentComponent() {
     });
 
     async function handleSubmit(values, { resetForm }) {
-        alert('handleSubmit deptId ' + id)
         setIsDisabled(true);
-        // try {
-        //     alert('deptID ' + id)
-        //     const companyResponse = await getCompanyById(values.companyId);
+        try {
+            const companyResponse = await getCompanyById(values.companyId);
 
-        //     let departmentId = id;
-        //     if (id == -1) {
-        //         departmentId = '';
-        //     }
+            let departmentId = id;
+            if (id == -1) {
+                departmentId = '';
+            }
 
-        //     const deptData = {
-        //         departmentId: departmentId,
-        //         departmentName: values.departmentName,
-        //         companyId: companyResponse.data.companyId
-        //     }
+            const deptData = {
+                departmentId: departmentId,
+                departmentName: values.departmentName,
+                companyId: companyResponse.data.companyId
+            }
 
-        //     const apiCall = id == -1
-        //         ? saveDepartment(deptData)
-        //         : updateDepartment(deptData);
+            const apiCall = id == -1
+                ? saveDepartment(deptData)
+                : updateDepartment(deptData);
 
-        //     console.log(deptData)
-        //     apiCall.then((response) => {
-        //         toast.success(id === "-1" ? "Department successfully created!" : "Department details have been updated.");
-        //         setIsDisabled(false);
-        //         if (id == -1) resetForm();
-        //         navigate('/viewdepartments');
-        //     }).catch((error) => {
-        //         toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the department.");
-        //         setIsDisabled(false);
-        //     });
-        // } catch (error) {
-        //     toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while fetching company details.");
-        //     setIsDisabled(false);
-        // }
+            apiCall.then((response) => {
+                toast.success(id === "-1" ? "Department successfully created!" : "Department details have been updated.");
+                setIsDisabled(false);
+                if (id == -1) resetForm();
+                navigate('/viewdepartments');
+            }).catch((error) => {
+                toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while saving the department.");
+                setIsDisabled(false);
+            });
+        } catch (error) {
+            toast.error(error.response?.data?.errorMessage || "An unexpected error occurred while fetching company details.");
+            setIsDisabled(false);
+        }
     }
 
     return (
@@ -149,7 +145,9 @@ export default function DepartmentComponent() {
                         initialValues={initialValues}
                         enableReinitialize={true}
                         validationSchema={validationSchema}
-                        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+                        onSubmit={handleSubmit}
+                    // onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
+
                     >
                         {(props) => (
                             <Form>
@@ -221,7 +219,7 @@ export default function DepartmentComponent() {
                                                 type="submit"
                                                 variant="contained"
                                                 color="info"
-                                                disabled={isDisabled || !props.dirty}
+                                                disabled={isDisabled || (id === '-1' && !props.dirty)}
                                                 startIcon={isDisabled ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                                                 sx={{
                                                     borderRadius: 2,

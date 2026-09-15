@@ -1,10 +1,10 @@
-import {apiClient} from "./apiClient";
+import { apiClient } from "./apiClient";
 
 
-export const saveDesignation= (designation) => apiClient.post(`designation/`,designation)
+export const saveDesignation = (designation) => apiClient.post(`designation/api/`, designation)
 
-export const retrieveDesignationById= (id) => apiClient.get(`designation/${id}`)
+export const retrieveDesignationById = (id) => apiClient.get(`designation/api/${id}`)
 
-export const getAllDesignations = () => apiClient.get(`designation/`)
+export const getAllDesignations = () => apiClient.get(`designation/api/`)
 
-export const updateDesignation= (designation) => apiClient.put(`designation/`,designation)
+export const updateDesignation = (designation) => apiClient.put(`designation/api/`, designation)

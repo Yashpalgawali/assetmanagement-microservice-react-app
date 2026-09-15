@@ -1,19 +1,19 @@
-import { 
-    Avatar, 
-    Box, 
-    Button, 
-    IconButton, 
-    InputAdornment, 
-    Paper, 
-    Stack, 
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    TextField, 
-    Tooltip, 
+import {
+    Avatar,
+    Box,
+    Button,
+    IconButton,
+    InputAdornment,
+    Paper,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip,
     Typography,
     useTheme,
     alpha
@@ -35,25 +35,26 @@ export default function ViewDesignationComponent() {
 
     useEffect(() => {
         getAllDesignations().then((response) => {
+            console.log("Designations LIst ", response.data)
             setDesignationList(response.data);
         }).catch((error) => {
             console.log('Error fetching designations', error);
         });
     }, []);
 
-    const filteredDesignations = designationList.filter(desig => 
-        desig.desig_name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredDesignations = designationList.filter(desig =>
+        String(desig.designationName ?? "").toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, maxWidth: '1200px', margin: '0 auto' }} className="fade-in">
             {/* Header Section */}
-            <Paper 
-                elevation={0} 
-                sx={{ 
-                    p: 3, 
-                    mb: 4, 
-                    borderRadius: 4, 
+            <Paper
+                elevation={0}
+                sx={{
+                    p: 3,
+                    mb: 4,
+                    borderRadius: 4,
                     background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                     color: 'white',
                     display: 'flex',
@@ -72,14 +73,14 @@ export default function ViewDesignationComponent() {
                         Define and manage professional roles within your organization
                     </Typography>
                 </Box>
-                <Button 
-                    variant="contained" 
-                    color="secondary" 
+                <Button
+                    variant="contained"
+                    color="secondary"
                     startIcon={<AddIcon />}
                     onClick={() => navigate(`/designation/-1`)}
-                    sx={{ 
-                        borderRadius: 3, 
-                        px: 3, 
+                    sx={{
+                        borderRadius: 3,
+                        px: 3,
                         py: 1.5,
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -127,9 +128,9 @@ export default function ViewDesignationComponent() {
                     <TableBody>
                         {filteredDesignations.length > 0 ? (
                             filteredDesignations.map((desig, index) => (
-                                <TableRow 
-                                    key={desig.desig_id}
-                                    sx={{ 
+                                <TableRow
+                                    key={desig.designationId}
+                                    sx={{
                                         '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) },
                                         transition: 'background-color 0.2s'
                                     }}
@@ -137,8 +138,8 @@ export default function ViewDesignationComponent() {
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>
                                         <Stack direction="row" spacing={2} alignItems="center">
-                                            <Avatar 
-                                                sx={{ 
+                                            <Avatar
+                                                sx={{
                                                     bgcolor: theme.palette.info.light,
                                                     width: 40,
                                                     height: 40
@@ -147,18 +148,18 @@ export default function ViewDesignationComponent() {
                                                 <BadgeIcon />
                                             </Avatar>
                                             <Typography variant="subtitle1" fontWeight="medium">
-                                                {desig.desig_name}
+                                                {desig.designationName}
                                             </Typography>
                                         </Stack>
                                     </TableCell>
                                     <TableCell align="center">
                                         <Tooltip title="Edit Designation">
-                                            <IconButton 
-                                                color="primary" 
-                                                onClick={() => navigate(`/designation/${desig.desig_id}`)}
-                                                sx={{ 
-                                                    bgcolor: alpha(theme.palette.primary.main, 0.1), 
-                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) } 
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => navigate(`/designation/${desig.designationId}`)}
+                                                sx={{
+                                                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                                                    '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) }
                                                 }}
                                             >
                                                 <EditIcon fontSize="small" />
