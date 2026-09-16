@@ -46,20 +46,20 @@ export function AuthProvider({ children }) {
                 const authenticated =
                     await initializeKeycloak();
 
-                console.log(
-                    "Keycloak initialization completed:",
-                    authenticated
-                );
+                // console.log(
+                //     "Keycloak initialization completed:",
+                //     authenticated
+                // );
 
-                console.log(
-                    "Keycloak authenticated:",
-                    keycloak.authenticated
-                );
+                // console.log(
+                //     "Keycloak authenticated:",
+                //     keycloak.authenticated
+                // );
 
-                console.log(
-                    "Keycloak token:",
-                    keycloak.token
-                );
+                // console.log(
+                //     "Keycloak token:",
+                //     keycloak.token
+                // );
 
                 if (!mounted) {
                     return;
@@ -68,9 +68,9 @@ export function AuthProvider({ children }) {
                 setIsAuthenticated(authenticated);
 
                 if (authenticated) {
-                    console.log("Loading user...");
+                    // console.log("Loading user...");
                     await loadUser();
-                    console.log("User loaded");
+                    // console.log("User loaded");
                 }
 
             } catch (error) {
@@ -102,10 +102,10 @@ export function AuthProvider({ children }) {
             await keycloak.updateToken(30);
             const tokenParsed =
                 keycloak.tokenParsed;
-            console.log(
-                "Token parsed:",
-                tokenParsed
-            );
+            // console.log(
+            //     "Token parsed:",
+            //     tokenParsed
+            // );
             const realmRoles =
                 tokenParsed?.realm_access?.roles || [];
             const clientRoles =
@@ -134,10 +134,10 @@ export function AuthProvider({ children }) {
                     tokenParsed?.sub || "",
                 roles
             };
-            console.log(
-                "User data:",
-                userData
-            );
+            // console.log(
+            //     "User data:",
+            //     userData
+            // );
             setUser(userData);
             sessionStorage.setItem(
                 "user",
@@ -167,7 +167,7 @@ export function AuthProvider({ children }) {
     }
 
     async function login() {
-        console.log("Starting Keycloak login...");
+        // console.log("Starting Keycloak login...");
         await keycloak.login({
             redirectUri:
                 window.location.origin +

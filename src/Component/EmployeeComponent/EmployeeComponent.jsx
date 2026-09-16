@@ -79,15 +79,15 @@ export default function EmployeeComponent() {
 
                 // Fetch assigned assets
                 getAllAssignedAssetsByEmpId(empId).then((res) => {
-                    const assignedIds = res.data.map((item) => item.asset.asset_id);
+                    const assignedIds = res.data.map((item) => item.asset.assetId);
                     setInitialValues({
-                        emp_name: empData.emp_name,
-                        emp_code: empData.emp_code || "",
-                        department: empData.department.dept_id,
-                        company: empData.department.company.comp_id,
-                        designation: empData.designation.desig_id,
-                        emp_email: empData.emp_email || "",
-                        emp_contact: empData.emp_contact || "",
+                        employeeName: empData.emp_name,
+                        employeeCode: empData.emp_code || "",
+                        departmentId: empData.department.dept_id,
+                        companyId: empData.department.company.comp_id,
+                        designationId: empData.designation.desig_id,
+                        employeeEmail: empData.emp_email || "",
+                        employeeContact: empData.emp_contact || "",
                         asset_ids: assignedIds
                     });
                 });
@@ -123,13 +123,13 @@ export default function EmployeeComponent() {
 
     function resetForm() {
         setInitialValues({
-            emp_name: "",
-            emp_code: "",
-            department: "",
-            company: "",
-            designation: "",
-            emp_email: "",
-            emp_contact: "",
+            employeeName: "",
+            employeeCode: "",
+            departmentId: "",
+            companyId: "",
+            designationId: "",
+            employeeEmail: "",
+            employeeContact: "",
             asset_ids: []
         });
     }
@@ -174,14 +174,17 @@ export default function EmployeeComponent() {
                     const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
                     setFieldValue("asset_ids", ids);
                 }}
-                value={options.filter((opt) => values.asset_ids?.includes(opt.value))}
+                value={options.filter((opt) => (
+                    values.asset_ids?.includes(opt.value))
+                )
+                }
             />
         );
     }
 
     const assetOptions = assetList.map((asset) => ({
         value: asset.assetId,
-        label: asset.assetName
+        label: "(" + asset.assetType?.assetType + ") " + asset.assetName + " (" + asset.modelNumber + ")"
     }));
 
     return (
@@ -238,27 +241,27 @@ export default function EmployeeComponent() {
                                             <Grid item xs={12} md={6}>
                                                 <TextField
                                                     fullWidth
-                                                    id="emp_name"
+                                                    id="employeeName"
                                                     label="Full Name"
-                                                    name="emp_name"
+                                                    name="employeeName"
                                                     variant="outlined"
-                                                    value={values.emp_name}
+                                                    value={values.employeeName}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
-                                                    error={touched.emp_name && Boolean(errors.emp_name)}
-                                                    helperText={touched.emp_name && errors.emp_name}
+                                                    error={touched.employeeName && Boolean(errors.employeeName)}
+                                                    helperText={touched.employeeName && errors.employeeName}
                                                     slotProps={{ sx: { borderRadius: 2 } }}
                                                 />
                                             </Grid>
                                             <Grid item xs={12} md={6}>
                                                 <TextField
                                                     fullWidth
-                                                    id="emp_email"
+                                                    id="employeeEmail"
                                                     label="Corporate Email"
-                                                    name="emp_email"
+                                                    name="employeeEmail"
                                                     type="email"
                                                     variant="outlined"
-                                                    value={values.emp_email}
+                                                    value={values.employeeEmail}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     slotProps={{ sx: { borderRadius: 2 } }}
@@ -267,11 +270,11 @@ export default function EmployeeComponent() {
                                             <Grid item xs={12} md={6}>
                                                 <TextField
                                                     fullWidth
-                                                    id="emp_code"
+                                                    id="employeeCode"
                                                     label="Employee ID / Code"
-                                                    name="emp_code"
+                                                    name="employeeCode"
                                                     variant="outlined"
-                                                    value={values.emp_code}
+                                                    value={values.employeeCode}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     slotProps={{ sx: { borderRadius: 2 } }}
@@ -280,11 +283,11 @@ export default function EmployeeComponent() {
                                             <Grid item xs={12} md={6}>
                                                 <TextField
                                                     fullWidth
-                                                    id="emp_contact"
+                                                    id="employeeContact"
                                                     label="Contact Number"
-                                                    name="emp_contact"
+                                                    name="employeeContact"
                                                     variant="outlined"
-                                                    value={values.emp_contact}
+                                                    value={values.employeeContact}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
                                                     slotprops={{ sx: { borderRadius: 2 } }}
@@ -313,7 +316,7 @@ export default function EmployeeComponent() {
                                                         value={values.designation}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        sx={{ borderRadius: 2 }}
+                                                        sx={{ borderRadius: 2, minWidth: 150 }}
                                                     >
                                                         {desigList.map(desig => (
                                                             <MenuItem key={desig.designationId} value={desig.designationId}>{desig.designationName}</MenuItem>
@@ -336,7 +339,7 @@ export default function EmployeeComponent() {
                                                             retrieveDepartmentsByCompanyId(e.target.value).then(res => setDeptList(res.data));
                                                         }}
                                                         onBlur={handleBlur}
-                                                        sx={{ borderRadius: 2 }}
+                                                        sx={{ borderRadius: 2, minWidth: 150 }}
                                                     >
                                                         {compList.map(comp => (
                                                             <MenuItem key={comp.companyId} value={comp.companyId}>{comp.companyName}</MenuItem>
@@ -356,7 +359,7 @@ export default function EmployeeComponent() {
                                                         disabled={!values.company}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
-                                                        sx={{ borderRadius: 2 }}
+                                                        sx={{ borderRadius: 2, minWidth: 150 }}
                                                     >
                                                         {deptList.map(dept => (
                                                             <MenuItem key={dept.departmentId} value={dept.departmentId}>{dept.departmentName}</MenuItem>
