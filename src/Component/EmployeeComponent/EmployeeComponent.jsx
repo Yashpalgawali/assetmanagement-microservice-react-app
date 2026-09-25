@@ -43,13 +43,13 @@ export default function EmployeeComponent() {
     const empId = id ? Number(id) : -1;
 
     const [initialValues, setInitialValues] = useState({
-        emp_name: "",
-        emp_code: "",
-        department: "",
-        company: "",
-        designation: "",
-        emp_email: "",
-        emp_contact: "",
+        employeeName: "",
+        employeeCode: "",
+        departmentId: "",
+        companyId: "",
+        designationId: "",
+        employeeEmail: "",
+        employeeContact: "",
         asset_ids: []
     });
 
@@ -65,7 +65,6 @@ export default function EmployeeComponent() {
         getAllCompaniesList().then(res => setCompList(res.data));
         getAllDesignations().then(res => setDesigList(res.data));
         getAllAssets().then(res => {
-            console.log("All assets data ", res.data);
             setAssetList(res.data)
         });
 
@@ -73,21 +72,23 @@ export default function EmployeeComponent() {
             setTitle("Update Employee Profile");
             retrieveEmployeeById(empId).then((response) => {
                 const empData = response.data;
-
+                // alert('Data found ' + JSON.stringify(empData))
+                // console.log('Employee Data', empData);
                 // Fetch departments for the employee's company
                 retrieveDepartmentsByCompanyId(empData.department.company.companyId).then(res => setDeptList(res.data));
 
                 // Fetch assigned assets
                 getAllAssignedAssetsByEmpId(empId).then((res) => {
+
                     const assignedIds = res.data.map((item) => item.asset.assetId);
                     setInitialValues({
-                        employeeName: empData.emp_name,
-                        employeeCode: empData.emp_code || "",
-                        departmentId: empData.department.dept_id,
-                        companyId: empData.department.company.comp_id,
-                        designationId: empData.designation.desig_id,
-                        employeeEmail: empData.emp_email || "",
-                        employeeContact: empData.emp_contact || "",
+                        employeeName: empData.employeeName,
+                        employeeCode: empData.employeeCode || "",
+                        departmentId: empData.departmentId,
+                        companyId: empData.companyId,
+                        designationId: empData.designationId,
+                        employeeEmail: empData.employeeEmail || "",
+                        employeeContact: empData.employeeContact || "",
                         asset_ids: assignedIds
                     });
                 });
@@ -140,7 +141,7 @@ export default function EmployeeComponent() {
         const submissionValues = {
             ...values,
             asset_ids: values.asset_ids,
-            emp_id: empId !== -1 ? empId : -1
+            employeeId: empId !== -1 ? empId : -1
         };
 
         console.log("object is ", submissionValues)
@@ -310,10 +311,10 @@ export default function EmployeeComponent() {
                                                     <InputLabel id="designation-label">Designation</InputLabel>
                                                     <MuiSelect
                                                         labelId="designation-label"
-                                                        id="designation"
-                                                        name="designation"
+                                                        id="designationId"
+                                                        name="designationId"
                                                         label="Designation"
-                                                        value={values.designation}
+                                                        value={values.designationId}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         sx={{ borderRadius: 2, minWidth: 150 }}
@@ -329,13 +330,13 @@ export default function EmployeeComponent() {
                                                     <InputLabel id="company-label">Company</InputLabel>
                                                     <MuiSelect
                                                         labelId="company-label"
-                                                        id="company"
-                                                        name="company"
+                                                        id="companyId"
+                                                        name="companyId"
                                                         label="Company"
-                                                        value={values.company}
+                                                        value={values.companyId}
                                                         onChange={(e) => {
-                                                            setFieldValue("company", e.target.value);
-                                                            setFieldValue("department", ""); // Reset dept
+                                                            setFieldValue("companyId", e.target.value);
+                                                            setFieldValue("departmentId", ""); // Reset dept
                                                             retrieveDepartmentsByCompanyId(e.target.value).then(res => setDeptList(res.data));
                                                         }}
                                                         onBlur={handleBlur}
@@ -352,11 +353,11 @@ export default function EmployeeComponent() {
                                                     <InputLabel id="department-label">Department</InputLabel>
                                                     <MuiSelect
                                                         labelId="department-label"
-                                                        id="department"
-                                                        name="department"
+                                                        id="departmentId"
+                                                        name="departmentId"
                                                         label="Department"
-                                                        value={values.department}
-                                                        disabled={!values.company}
+                                                        value={values.departmentId}
+                                                        disabled={!values.companyId}
                                                         onChange={handleChange}
                                                         onBlur={handleBlur}
                                                         sx={{ borderRadius: 2, minWidth: 150 }}

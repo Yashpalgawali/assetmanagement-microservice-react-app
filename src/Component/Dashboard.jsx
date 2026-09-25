@@ -66,17 +66,23 @@ export default function Dashboard() {
 
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
-    
+
     // Fetch actual data
-    getAllEmployeesList().then(res => setEmployeeCount(res.data.length));
-    getAllAssetsCount().then(res => setAssetCount(res.data));
-    getAllAssignedAssets().then(res => setAssignedAssetsCount(res.data.length));
-    
+    getAllEmployeesList().then(res => {
+      setEmployeeCount(res.data.length)
+    });
+    getAllAssetsCount().then(res => {
+      setAssetCount(res.data)
+    }
+    );
+    getAllAssignedAssets().then(res => setAssignedAssetsCount(res.data.length)).catch(() => { });
+
     getAllAssets().then((response) => {
       const formattedData = response.data.slice(0, 5).map((item, index) => ({
         id: index,
         value: Number(item.quantity) || 1,
-        label: item.atype.type_name
+        label: item.assetType.assetType
+
       }));
       setAssetCategoryData(formattedData.length > 0 ? formattedData : [
         { id: 0, value: 10, label: "Laptops" },
@@ -87,11 +93,11 @@ export default function Dashboard() {
   }, []);
 
   const StatCard = ({ title, value, icon, color, trend, trendValue }) => (
-    <Card 
-      elevation={0} 
+    <Card
+      elevation={0}
       data-aos="zoom-in"
-      sx={{ 
-        borderRadius: 4, 
+      sx={{
+        borderRadius: 4,
         border: '1px solid',
         borderColor: alpha(theme.palette.divider, 0.08),
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -104,9 +110,9 @@ export default function Dashboard() {
     >
       <CardContent sx={{ p: 3 }}>
         <Stack direction="row" justifyContent="space-between" alignItems="flex-start" mb={2}>
-          <Avatar 
-            sx={{ 
-              bgcolor: alpha(color, 0.1), 
+          <Avatar
+            sx={{
+              bgcolor: alpha(color, 0.1),
               color: color,
               width: 56,
               height: 56,
@@ -141,13 +147,13 @@ export default function Dashboard() {
   return (
     <Box sx={{ pb: 4 }}>
       {/* Welcome Banner */}
-      <Paper 
+      <Paper
         elevation={0}
         data-aos="fade-down"
-        sx={{ 
-          p: 4, 
-          mb: 4, 
-          borderRadius: 5, 
+        sx={{
+          p: 4,
+          mb: 4,
+          borderRadius: 5,
           background: `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`,
           color: 'white',
           position: 'relative',
@@ -162,10 +168,10 @@ export default function Dashboard() {
             Track, manage and optimize your organizational assets in real-time. Everything is under control.
           </Typography>
           <Stack direction="row" spacing={2}>
-            <Button 
-              variant="contained" 
-              sx={{ 
-                bgcolor: 'white', 
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: 'white',
                 color: theme.palette.primary.main,
                 px: 3,
                 py: 1,
@@ -178,10 +184,10 @@ export default function Dashboard() {
             >
               Add New Asset
             </Button>
-            <Button 
-              variant="outlined" 
-              sx={{ 
-                borderColor: 'rgba(255,255,255,0.3)', 
+            <Button
+              variant="outlined"
+              sx={{
+                borderColor: 'rgba(255,255,255,0.3)',
                 color: 'white',
                 px: 3,
                 borderRadius: 2,
@@ -244,13 +250,13 @@ export default function Dashboard() {
       {/* Charts & Activity Section */}
       <Grid container spacing={4}>
         <Grid item xs={12} lg={8}>
-          <Paper 
+          <Paper
             elevation={0}
             data-aos="fade-right"
-            sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              border: '1px solid', 
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid',
               borderColor: alpha(theme.palette.divider, 0.08),
               height: '100%'
             }}
@@ -277,13 +283,13 @@ export default function Dashboard() {
         </Grid>
 
         <Grid item xs={12} lg={4}>
-          <Paper 
+          <Paper
             elevation={0}
             data-aos="fade-left"
-            sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              border: '1px solid', 
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid',
               borderColor: alpha(theme.palette.divider, 0.08),
               height: '100%'
             }}
@@ -312,10 +318,10 @@ export default function Dashboard() {
                     <Typography variant="body2" fontWeight="medium">{item.label}</Typography>
                     <Typography variant="body2" fontWeight="bold">{item.value}%</Typography>
                   </Stack>
-                  <LinearProgress 
-                    variant="determinate" 
-                    value={item.value} 
-                    sx={{ height: 6, borderRadius: 3, bgcolor: alpha(theme.palette.primary.main, 0.1) }} 
+                  <LinearProgress
+                    variant="determinate"
+                    value={item.value}
+                    sx={{ height: 6, borderRadius: 3, bgcolor: alpha(theme.palette.primary.main, 0.1) }}
                   />
                 </Box>
               ))}
@@ -324,13 +330,13 @@ export default function Dashboard() {
         </Grid>
 
         <Grid item xs={12}>
-          <Paper 
+          <Paper
             elevation={0}
             data-aos="fade-up"
-            sx={{ 
-              p: 3, 
-              borderRadius: 4, 
-              border: '1px solid', 
+            sx={{
+              p: 3,
+              borderRadius: 4,
+              border: '1px solid',
               borderColor: alpha(theme.palette.divider, 0.08)
             }}
           >
@@ -369,10 +375,10 @@ export default function Dashboard() {
                       </TableCell>
                       <TableCell color="text.secondary">{row.date}</TableCell>
                       <TableCell>
-                        <Typography 
-                          variant="caption" 
+                        <Typography
+                          variant="caption"
                           fontWeight="bold"
-                          sx={{ 
+                          sx={{
                             color: row.status === 'Assigned' ? '#10b981' : row.status === 'Available' ? theme.palette.primary.main : '#f59e0b',
                             bgcolor: alpha(row.status === 'Assigned' ? '#10b981' : row.status === 'Available' ? theme.palette.primary.main : '#f59e0b', 0.1),
                             px: 1.5,

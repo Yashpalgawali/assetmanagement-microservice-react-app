@@ -37,6 +37,7 @@ export default function ViewEmployeeComponent() {
 
     useEffect(() => {
         getAllEmployeesList().then((response) => {
+            console.log(response.data)
             setEmpList(response.data);
         }).catch((error) => {
             console.log('Error while fetching Employees List ', error);
@@ -44,10 +45,10 @@ export default function ViewEmployeeComponent() {
     }, []);
 
     const filteredEmployees = empList.filter(emp =>
-        emp.emp_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.emp_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.department.dept_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.emp_code?.toLowerCase().includes(searchTerm.toLowerCase())
+        emp.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.employeeEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.designationName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.employeeCode?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     function downloadAllEmployees() {
@@ -194,7 +195,7 @@ export default function ViewEmployeeComponent() {
                         {filteredEmployees.length > 0 ? (
                             filteredEmployees.map((emp) => (
                                 <TableRow
-                                    key={emp.emp_id}
+                                    key={emp.employeeId}
                                     sx={{
                                         '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.02) },
                                         transition: 'background-color 0.2s'
@@ -209,38 +210,38 @@ export default function ViewEmployeeComponent() {
                                                     height: 40
                                                 }}
                                             >
-                                                {emp.emp_name.charAt(0)}
+                                                {emp.employeeName.charAt(0)}
                                             </Avatar>
                                             <Box>
                                                 <Typography variant="subtitle2" fontWeight="bold">
-                                                    {emp.emp_name}
+                                                    {emp.employeeName}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {emp.emp_email}
+                                                    {emp.employeeEmail}
                                                 </Typography>
                                             </Box>
                                         </Stack>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2">{emp.emp_contact}</Typography>
+                                        <Typography variant="body2">{emp.employeeContact}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2">{emp.designation.desig_name}</Typography>
+                                        <Typography variant="body2">{emp.designationName}</Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Typography variant="body2" sx={{ bgcolor: alpha(theme.palette.info.main, 0.1), color: 'info.main', px: 1, py: 0.5, borderRadius: 1, display: 'inline-block' }}>
-                                            {emp.department.dept_name}
+                                            {emp.departmentName}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="body2" fontWeight="medium">{emp.department.company.comp_name}</Typography>
+                                        <Typography variant="body2" fontWeight="medium">{emp.companyName}</Typography>
                                     </TableCell>
                                     <TableCell align="center">
                                         <Stack direction="row" spacing={1} justifyContent="center">
                                             <Tooltip title="Edit Employee">
                                                 <IconButton
                                                     color="primary"
-                                                    onClick={() => navigate(`/employee/${emp.emp_id}`)}
+                                                    onClick={() => navigate(`/employee/${emp.employeeId}`)}
                                                     sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1), '&:hover': { bgcolor: alpha(theme.palette.primary.main, 0.2) } }}
                                                 >
                                                     <EditIcon fontSize="small" />
@@ -249,7 +250,7 @@ export default function ViewEmployeeComponent() {
                                             <Tooltip title="View Assets">
                                                 <IconButton
                                                     color="secondary"
-                                                    onClick={() => navigate(`/viewassignedassets/${emp.emp_id}`)}
+                                                    onClick={() => navigate(`/viewassignedassets/${emp.employeeId}`)}
                                                     sx={{ bgcolor: alpha(theme.palette.secondary.main, 0.1), '&:hover': { bgcolor: alpha(theme.palette.secondary.main, 0.2) } }}
                                                 >
                                                     <VisibilityIcon fontSize="small" />
