@@ -73,12 +73,18 @@ export default function EmployeeComponent() {
             retrieveEmployeeById(empId).then((response) => {
                 const empData = response.data;
                 // alert('Data found ' + JSON.stringify(empData))
-                // console.log('Employee Data', empData);
+                console.log('Employee Data', empData);
                 // Fetch departments for the employee's company
-                retrieveDepartmentsByCompanyId(empData.department.company.companyId).then(res => setDeptList(res.data));
+                retrieveDepartmentsByCompanyId(empData.companyId).then(res => {
+                    console.log("dept list " + res.data);
+                    alert('dept list ' + JSON.stringify(empData))
+                    setDeptList(res.data);
+                });
 
                 // Fetch assigned assets
                 getAllAssignedAssetsByEmpId(empId).then((res) => {
+
+                    console.log("Result is ", res);
 
                     const assignedIds = res.data.map((item) => item.asset.assetId);
                     setInitialValues({

@@ -10,7 +10,7 @@ export const updateEmployee = (employee) => apiClient.put(`employee/api/`, emplo
 
 export const getAllAssignedAssets = () => apiClient.get(`employee/api/viewassignedassets`)
 
-export const getAllAssignedAssetsByEmpId = (empid) => apiClient.get(`employee/getassignedassetsbyempid/${empid}`)
+export const getAllAssignedAssetsByEmpId = (empid) => apiClient.get(`employee/api/getassignedassetsbyempid/${empid}`)
 
 export const exportAllAssignedAssets = () => apiClient.get(`employee/api/exportassignedassets/excel`, {
     responseType: 'arraybuffer'
