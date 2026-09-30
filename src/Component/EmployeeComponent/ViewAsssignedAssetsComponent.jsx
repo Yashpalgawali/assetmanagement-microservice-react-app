@@ -42,7 +42,8 @@ export default function ViewAsssignedAssetsComponent() {
         AOS.init({ duration: 800, once: true });
         getAllAssignedAssets().then((response) => {
             console.log(response.data)
-            setAssignedAssetsList(response.data);
+            alert('All assets data is here');
+            // setAssignedAssetsList(response.data);
         });
     }, []);
 
@@ -88,10 +89,10 @@ export default function ViewAsssignedAssetsComponent() {
                             <Button
                                 startIcon={<CloudDownloadIcon />}
                                 onClick={() => downloadAssignedAssets()}
-                                sx={{ 
+                                sx={{
                                     mt: 2,
-                                    borderRadius: '12px', 
-                                    textTransform: 'none', 
+                                    borderRadius: '12px',
+                                    textTransform: 'none',
                                     fontWeight: 'bold',
                                     fontSize: '0.95rem',
                                     px: 3,

@@ -39,6 +39,8 @@ export default function ViewCompanyComponent() {
             setCompanyList(response.data);
 
         }).catch((error) => {
+            console.log("Error is ", error);
+            alert(JSON.stringify(error));
             toast.error('Error fetching companies', error);
         });
     }, []);

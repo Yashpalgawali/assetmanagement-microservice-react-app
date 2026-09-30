@@ -72,8 +72,19 @@ export default function EmployeeComponent() {
             setTitle("Update Employee Profile");
             retrieveEmployeeById(empId).then((response) => {
                 const empData = response.data;
-                // alert('Data found ' + JSON.stringify(empData))
-                console.log('Employee Data', empData);
+                // console.log('Employee Data', empData);
+
+                setInitialValues({
+                    employeeName: empData.employeeName,
+                    employeeCode: empData.employeeCode || "",
+                    designationId: empData.designationId,
+                    departmentId: empData.departmentId,
+                    companyId: empData.companyId,
+                    employeeEmail: empData.employeeEmail || "",
+                    employeeContact: empData.employeeContact || ""
+
+                });
+
                 // Fetch departments for the employee's company
                 retrieveDepartmentsByCompanyId(empData.companyId).then(res => {
                     console.log("dept list " + res.data);
@@ -83,7 +94,7 @@ export default function EmployeeComponent() {
 
                 // Fetch assigned assets
                 getAllAssignedAssetsByEmpId(empId).then((res) => {
-
+                    alert(JSON.stringify(res.data))
                     console.log("Result is ", res);
 
                     const assignedIds = res.data.map((item) => item.asset.assetId);

@@ -12,6 +12,7 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TablePagination,
     TextField,
     Tooltip,
     Typography,
@@ -32,12 +33,17 @@ import BusinessIcon from '@mui/icons-material/Business';
 export default function ViewDepartmentComponent() {
     const theme = useTheme();
     const navigate = useNavigate();
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
+
     const [deptList, setDeptList] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         getAllDepartments().then((response) => {
             setDeptList(response.data);
+            setPage(0);
         }).catch((error) => {
             toast.error(error.response?.data?.errorMessage || "Error: Could not retrieve department list. Please try again later.");
         });
@@ -48,6 +54,10 @@ export default function ViewDepartmentComponent() {
         (dept.company && String(dept.company.companyName ?? "").toLowerCase().includes(String(searchTerm ?? "").toLowerCase()))
     );
 
+    const paginatedDepartments = filteredDepartments.slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage
+    );
     // const filteredDepartments = deptList.filter(dept =>
     //     String(dept.departmentName ?? "").toLowerCase().includes(searchTerm.toLowerCase())
     // );
@@ -132,8 +142,8 @@ export default function ViewDepartmentComponent() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredDepartments.length > 0 ? (
-                            filteredDepartments.map((dept, index) => (
+                        {paginatedDepartments.length > 0 ? (
+                            paginatedDepartments.map((dept, index) => (
                                 <TableRow
                                     key={dept.departmentId}
                                     sx={{
@@ -141,7 +151,8 @@ export default function ViewDepartmentComponent() {
                                         transition: 'background-color 0.2s'
                                     }}
                                 >
-                                    <TableCell>{index + 1}</TableCell>
+                                    <TableCell> {page * rowsPerPage + index + 1} </TableCell>
+                                    {/* <TableCell>{index + 1}</TableCell> */}
                                     <TableCell>
                                         <Stack direction="row" spacing={2} alignItems="center">
                                             <Avatar
@@ -194,6 +205,20 @@ export default function ViewDepartmentComponent() {
                             </TableRow>
                         )}
                     </TableBody>
+                    <TablePagination
+                        component="div"
+                        count={filteredDepartments.length}
+                        page={page}
+                        onPageChange={(event, newPage) => {
+                            setPage(newPage);
+                        }}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={(event) => {
+                            setRowsPerPage(parseInt(event.target.value, 10));
+                            setPage(0);
+                        }}
+                        rowsPerPageOptions={[5, 10, 25, 50]}
+                    />
                 </Table>
             </TableContainer>
         </Box>
