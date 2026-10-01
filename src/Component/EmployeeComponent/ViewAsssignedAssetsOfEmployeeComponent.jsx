@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { exportAllAssignedAssetsByEmployeeId, getAllAssignedAssetsByEmpId } from "../../api/EmployeeApiClient";
+import { exportAllAssignedAssetsByEmployeeId, getAllAssignedAssetsByEmpId, retrieveEmployeeById } from "../../api/EmployeeApiClient";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EmailIcon from '@mui/icons-material/Email';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -44,12 +44,15 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
     useEffect(() => {
         AOS.init({ duration: 800, once: true });
         getAllAssignedAssetsByEmpId(id).then((response) => {
+            retrieveEmployeeById(id).then((response2) => {
+                setEmployee(response2.data);
+            })
             if (response.data && response.data.length > 0) {
                 setAssignedAssetsList(response.data);
-                setEmployee(response.data[0].employee);
             }
         });
     }, [id]);
+
 
     if (!employee) {
         return (
@@ -165,13 +168,13 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                         fontWeight: 'bold'
                                     }}
                                 >
-                                    {employee.emp_name.charAt(0)}
+                                    {employee.employeeName.charAt(0)}
                                 </Avatar>
                                 <Typography variant="h5" fontWeight="bold" sx={{ mt: 2 }}>
-                                    {employee.emp_name}
+                                    {employee.employeeName}
                                 </Typography>
                                 <Chip
-                                    label={employee.designation.desig_name}
+                                    label={employee.designationName}
                                     size="small"
                                     color="primary"
                                     variant="outlined"
@@ -186,7 +189,7 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                     </Avatar>
                                     <Box>
                                         <Typography variant="caption" color="text.secondary">Email Address</Typography>
-                                        <Typography variant="body2" fontWeight="600">{employee.emp_email}</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.employeeEmail}</Typography>
                                     </Box>
                                 </Box>
 
@@ -196,7 +199,7 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                     </Avatar>
                                     <Box>
                                         <Typography variant="caption" color="text.secondary">Department</Typography>
-                                        <Typography variant="body2" fontWeight="600">{employee.department.dept_name}</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.departmentName}</Typography>
                                     </Box>
                                 </Box>
 
@@ -206,7 +209,7 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                     </Avatar>
                                     <Box>
                                         <Typography variant="caption" color="text.secondary">Company</Typography>
-                                        <Typography variant="body2" fontWeight="600">{employee.department.company.comp_name}</Typography>
+                                        <Typography variant="body2" fontWeight="600">{employee.companyName}</Typography>
                                     </Box>
                                 </Box>
 
@@ -264,7 +267,7 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                             <TableCell sx={{ color: 'text.secondary' }}>{index + 1}</TableCell>
                                             <TableCell>
                                                 <Chip
-                                                    label={asset.asset.atype.type_name}
+                                                    label={asset.assettype}
                                                     size="small"
                                                     variant="soft"
                                                     color="primary"
@@ -273,14 +276,14 @@ export default function ViewAsssignedAssetsOfEmployeeComponent() {
                                             </TableCell>
                                             <TableCell>
                                                 <Box>
-                                                    <Typography variant="body2" fontWeight="bold">{asset.asset.asset_name}</Typography>
-                                                    <Typography variant="caption" color="text.secondary">Model: {asset.asset.model_number}</Typography>
+                                                    <Typography variant="body2" fontWeight="bold">{asset.assetName}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">Model: {asset.modelNumber}</Typography>
                                                 </Box>
                                             </TableCell>
                                             <TableCell>
                                                 <Box>
-                                                    <Typography variant="body2">{asset.assign_date}</Typography>
-                                                    <Typography variant="caption" color="text.secondary">{asset.assign_time}</Typography>
+                                                    <Typography variant="body2">{asset.assignDate}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">{asset.assignTime}</Typography>
                                                 </Box>
                                             </TableCell>
                                         </TableRow>

@@ -26,7 +26,7 @@ import { getAllAssignedAssetsByEmpId, retrieveEmployeeById, saveEmployee, update
 import { retrieveDepartmentsByCompanyId } from "../../api/DepartmentApiClient";
 import { getAllDesignations } from "../../api/DesignationApiClient";
 import { toast } from "react-toastify";
-import { getAllAssets } from "../../api/AssetApiClient";
+import { getAllAssets, getAllAvailableAssets } from "../../api/AssetApiClient";
 import Select from "react-select";
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -64,7 +64,10 @@ export default function EmployeeComponent() {
         // Load initial lists
         getAllCompaniesList().then(res => setCompList(res.data));
         getAllDesignations().then(res => setDesigList(res.data));
-        getAllAssets().then(res => {
+        // getAllAssets().then(res => {
+        //     setAssetList(res.data)
+        // });
+        getAllAvailableAssets().then(res => {
             setAssetList(res.data)
         });
 
