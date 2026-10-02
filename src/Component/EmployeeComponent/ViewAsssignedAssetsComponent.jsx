@@ -41,16 +41,14 @@ export default function ViewAsssignedAssetsComponent() {
     useEffect(() => {
         AOS.init({ duration: 800, once: true });
         getAllAssignedAssets().then((response) => {
-            console.log(response.data)
-            alert('All assets data is here');
-            // setAssignedAssetsList(response.data);
+            setAssignedAssetsList(response.data);
         });
     }, []);
 
     const filteredAssets = assignedAssetsList.filter(asset =>
-        asset.employee.emp_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.assigned.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.assigned_types.toLowerCase().includes(searchTerm.toLowerCase())
+        asset.empName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.assetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        asset.assettype.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     function downloadAssignedAssets() {
@@ -220,16 +218,16 @@ export default function ViewAsssignedAssetsComponent() {
                                                         bgcolor: theme.palette.primary.light
                                                     }}
                                                 >
-                                                    {asset.employee.emp_name.charAt(0)}
+                                                    {asset.empName.charAt(0)}
                                                 </Avatar>
                                                 <Typography variant="body2" fontWeight="600">
-                                                    {asset.employee.emp_name}
+                                                    {asset.empName}
                                                 </Typography>
                                             </Stack>
                                         </TableCell>
                                         <TableCell>
                                             <Chip
-                                                label={asset.assigned_types}
+                                                label={asset.assettype}
                                                 size="small"
                                                 sx={{
                                                     fontWeight: 'bold',
@@ -240,13 +238,13 @@ export default function ViewAsssignedAssetsComponent() {
                                         </TableCell>
                                         <TableCell>
                                             <Box>
-                                                <Typography variant="body2" fontWeight="bold">{asset.assigned}</Typography>
-                                                <Typography variant="caption" color="text.secondary">SN: {asset.model_numbers}</Typography>
+                                                <Typography variant="body2" fontWeight="bold">{asset.assetName}</Typography>
+                                                <Typography variant="caption" color="text.secondary">SN: {asset.modelNumbers}</Typography>
                                             </Box>
                                         </TableCell>
                                         <TableCell>
                                             <Box>
-                                                <Typography variant="body2">{asset.assign_date}</Typography>
+                                                <Typography variant="body2">{asset.assignDate}</Typography>
                                                 <Typography variant="caption" color="text.secondary">{asset.assign_time}</Typography>
                                             </Box>
                                         </TableCell>
@@ -256,7 +254,7 @@ export default function ViewAsssignedAssetsComponent() {
                                                 <IconButton
                                                     size="small"
                                                     color="primary"
-                                                    onClick={() => navigate(`/viewassignedassets/${asset.emp_id}`)}
+                                                    onClick={() => navigate(`/viewassignedassets/${asset.empId}`)}
                                                 >
 
                                                     <OpenInNewIcon fontSize="small" />
