@@ -36,6 +36,51 @@ import WorkIcon from '@mui/icons-material/Work';
 import ContactMailIcon from '@mui/icons-material/ContactMail';
 import InventoryIcon from '@mui/icons-material/Inventory';
 
+const getAssetId = (item) => {
+    if (item == null) return null;
+    if (typeof item === "number" || typeof item === "string") return item;
+    return (
+        item.asset_id ??
+        item.assetId ??
+        item.asset?.assetId ??
+        item.asset?.asset_id ??
+        item.asset?.id ??
+        item.id ??
+        item.value ??
+        null
+    );
+};
+
+const toAssetOption = (item) => {
+    if (item == null) return null;
+    if (typeof item === "object" && item.value != null && item.label != null) {
+        return item;
+    }
+    const id = getAssetId(item);
+    if (id == null) return null;
+    const name =
+        (typeof item === "object" && (item.assetName || item.name || item.asset?.assetName || item.asset?.name)) ||
+        `Asset #${id}`;
+    const model =
+        (typeof item === "object" && (item.modelNumber || item.model || item.asset?.modelNumber || item.asset?.model)) ||
+        "";
+    const typeObj =
+        typeof item === "object"
+            ? item.assetType || item.atype || item.asset?.assetType || item.asset?.atype
+            : null;
+    const type =
+        (typeObj && (typeof typeObj === "string" ? typeObj : typeObj.assetType || typeObj.typeName || typeObj.type_name)) ||
+        (typeof item === "object" && (item.assettype || item.type)) ||
+        "";
+
+    const typePrefix = type ? `(${type}) ` : "";
+    const modelSuffix = model ? ` (${model})` : "";
+    return {
+        value: id,
+        label: `${typePrefix}${name}${modelSuffix}`
+    };
+};
+
 export default function EmployeeComponent() {
     const theme = useTheme();
     const { id } = useParams();
@@ -60,59 +105,100 @@ export default function EmployeeComponent() {
     const [isDisabled, setIsDisabled] = useState(false);
     const [title, setTitle] = useState("Add Employee");
 
+    const fetchAvailableOrAllAssets = async () => {
+        try {
+            const res = await getAllAvailableAssets();
+            const data = Array.isArray(res.data) ? res.data : (res.data?.content || []);
+            if (data.length > 0) {
+                return data;
+            }
+        } catch (err) {
+            console.warn("getAllAvailableAssets call failed, attempting getAllAssets fallback:", err);
+        }
+        try {
+            const resAll = await getAllAssets();
+            return Array.isArray(resAll.data) ? resAll.data : (resAll.data?.content || []);
+        } catch (err) {
+            console.error("getAllAssets call failed:", err);
+            return [];
+        }
+    };
+
     useEffect(() => {
         // Load initial lists
         getAllCompaniesList().then(res => setCompList(res.data));
         getAllDesignations().then(res => setDesigList(res.data));
-        // getAllAssets().then(res => {
-        //     setAssetList(res.data)
-        // });
-        getAllAvailableAssets().then(res => {
-            setAssetList(res.data)
-        });
 
         if (empId !== -1) {
             setTitle("Update Employee Profile");
-            retrieveEmployeeById(empId).then((response) => {
-                const empData = response.data;
-                // console.log('Employee Data', empData);
 
-                setInitialValues({
-                    employeeName: empData.employeeName,
-                    employeeCode: empData.employeeCode || "",
-                    designationId: empData.designationId,
-                    departmentId: empData.departmentId,
-                    companyId: empData.companyId,
-                    employeeEmail: empData.employeeEmail || "",
-                    employeeContact: empData.employeeContact || ""
-
-                });
+            Promise.all([
+                fetchAvailableOrAllAssets(),
+                retrieveEmployeeById(empId),
+                getAllAssignedAssetsByEmpId(empId)
+            ]).then(([availableAssets, empRes, assignedRes]) => {
+                const empData = empRes.data || {};
+                const assignedAssets = Array.isArray(assignedRes.data)
+                    ? assignedRes.data
+                    : (assignedRes.data?.content || assignedRes.data?.assets || []);
 
                 // Fetch departments for the employee's company
-                retrieveDepartmentsByCompanyId(empData.companyId).then(res => {
-                    console.log("dept list " + res.data);
-                    alert('dept list ' + JSON.stringify(empData))
-                    setDeptList(res.data);
-                });
-
-                // Fetch assigned assets
-                getAllAssignedAssetsByEmpId(empId).then((res) => {
-                    alert(JSON.stringify(res.data))
-                    console.log("Result is ", res);
-
-                    const assignedIds = res.data.map((item) => item.asset.assetId);
-                    setInitialValues({
-                        employeeName: empData.employeeName,
-                        employeeCode: empData.employeeCode || "",
-                        departmentId: empData.departmentId,
-                        companyId: empData.companyId,
-                        designationId: empData.designationId,
-                        employeeEmail: empData.employeeEmail || "",
-                        employeeContact: empData.employeeContact || "",
-                        asset_ids: assignedIds
+                if (empData.companyId) {
+                    retrieveDepartmentsByCompanyId(empData.companyId).then(res => {
+                        setDeptList(res.data || []);
                     });
+                }
+
+                // Extract assigned asset IDs safely
+                const assignedIds = assignedAssets
+                    .map(getAssetId)
+                    .filter((id) => id != null);
+
+                // Build a combined map of all available assets + already assigned assets
+                const combinedMap = new Map();
+
+                (availableAssets || []).forEach((asset) => {
+                    const opt = toAssetOption(asset);
+                    if (opt && opt.value != null) {
+                        combinedMap.set(String(opt.value), opt);
+                    }
                 });
-            }).catch(err => toast.error("Error: Could not retrieve employee profile information."));
+
+                assignedAssets.forEach((assigned) => {
+                    const opt = toAssetOption(assigned);
+                    if (opt && opt.value != null) {
+                        combinedMap.set(String(opt.value), opt);
+                    }
+                });
+
+                const combinedOptions = Array.from(combinedMap.values());
+                setAssetList(combinedOptions);
+
+                setInitialValues({
+                    employeeName: empData.employeeName || "",
+                    employeeCode: empData.employeeCode || "",
+                    designationId: empData.designationId || "",
+                    departmentId: empData.departmentId || "",
+                    companyId: empData.companyId || "",
+                    employeeEmail: empData.employeeEmail || "",
+                    employeeContact: empData.employeeContact || "",
+                    asset_ids: assignedIds
+                });
+            }).catch(err => {
+                console.error("Error retrieving employee data:", err);
+                toast.error("Error: Could not retrieve employee profile information.");
+            });
+        } else {
+            fetchAvailableOrAllAssets().then(assets => {
+                const combinedMap = new Map();
+                (assets || []).forEach((asset) => {
+                    const opt = toAssetOption(asset);
+                    if (opt && opt.value != null) {
+                        combinedMap.set(String(opt.value), opt);
+                    }
+                });
+                setAssetList(Array.from(combinedMap.values()));
+            });
         }
     }, [empId]);
 
@@ -134,10 +220,15 @@ export default function EmployeeComponent() {
         }),
         option: (provided, state) => ({
             ...provided,
-            backgroundColor: state.isFocused ? alpha(theme.palette.primary.main, 0.1) : "white",
-            color: state.isFocused ? theme.palette.primary.main : "black",
+            backgroundColor: state.isSelected
+                ? alpha(theme.palette.primary.main, 0.15)
+                : state.isFocused
+                ? alpha(theme.palette.primary.main, 0.08)
+                : "white",
+            color: state.isSelected || state.isFocused ? theme.palette.primary.main : "black",
+            fontWeight: state.isSelected ? 'bold' : 'normal',
             '&:active': {
-                backgroundColor: alpha(theme.palette.primary.main, 0.2)
+                backgroundColor: alpha(theme.palette.primary.main, 0.25)
             }
         })
     };
@@ -182,31 +273,38 @@ export default function EmployeeComponent() {
 
     function AssetMultiSelect({ options }) {
         const { setFieldValue, values } = useFormikContext();
+
+        const selectedValues = (values.asset_ids || [])
+            .map((val) => {
+                const id = getAssetId(val);
+                if (id == null) return null;
+                const found = options.find((opt) => String(opt.value) === String(id));
+                if (found) return found;
+                return toAssetOption(val) || { value: id, label: `Asset #${id}` };
+            })
+            .filter(Boolean);
+
         return (
             <Select
                 styles={customStyles}
                 name="asset_ids"
                 isMulti
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
                 options={options}
                 className="basic-multi-select"
                 classNamePrefix="select"
                 placeholder="Assign assets to employee..."
-                onChange={(selectedOptions) => {
-                    const ids = selectedOptions ? selectedOptions.map((opt) => opt.value) : [];
+                value={selectedValues}
+                onChange={(selected) => {
+                    const ids = selected ? selected.map((opt) => opt.value) : [];
                     setFieldValue("asset_ids", ids);
                 }}
-                value={options.filter((opt) => (
-                    values.asset_ids?.includes(opt.value))
-                )
-                }
             />
         );
     }
 
-    const assetOptions = assetList.map((asset) => ({
-        value: asset.assetId,
-        label: "(" + asset.assetType?.assetType + ") " + asset.assetName + " (" + asset.modelNumber + ")"
-    }));
+    const assetOptions = assetList.map((asset) => toAssetOption(asset) || asset);
 
     return (
         <Box sx={{ p: { xs: 2, md: 4 }, display: 'flex', justifyContent: 'center' }} className="fade-in">

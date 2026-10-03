@@ -248,12 +248,17 @@ export default function AssetComponent() {
                                             label="Quantity"
                                             type="number"
                                             value={props.values.qty}
-                                            onChange={props.handleChange}
+                                            //onChange={props.handleChange}
+                                            onChange={(e) => {
+                                                const val = parseInt(e.target.value, 10);
+                                                if (val < 0) return;
+                                                props.setFieldValue("qty", val);
+                                            }}
                                             onBlur={props.handleBlur}
                                             error={props.touched.qty && Boolean(props.errors.qty)}
                                             helperText={props.touched.qty && props.errors.qty}
                                             variant="outlined"
-                                            InputProps={{ sx: { borderRadius: 2 } }}
+                                            InputProps={{ sx: { borderRadius: 2 }, min: 0 }}
                                         />
                                     </Grid>
 
